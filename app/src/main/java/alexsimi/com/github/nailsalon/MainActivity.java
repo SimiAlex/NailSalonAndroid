@@ -61,18 +61,18 @@ public class MainActivity extends AppCompatActivity
     {
         super.onStart();
 
-        //load DB
-        DatabaseHandler db = DatabaseHandler.getInstance();
-
+        // create the .csv file if it doesn't exist (for first time users)
         try
         {
             sourceFile.createNewFile();
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Log.e("NailSalon", "onStart() " + e.toString());;
         }
 
+        // load DB from disk
+        DatabaseHandler db = DatabaseHandler.getInstance();
         db.loadDb(sourceFile);
 
         // setup adapter
