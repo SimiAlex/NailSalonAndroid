@@ -23,7 +23,7 @@ import alexsimi.com.github.nailsalon.view.AppointmentAdapter;
 
 public class MainActivity extends AppCompatActivity
 {
-    //fields
+    //fields - layout
     private Button addButton;
     private EditText id_et;
     private EditText name_et;
@@ -31,20 +31,20 @@ public class MainActivity extends AppCompatActivity
     private EditText time_et;
     private EditText procedure_et;
     private EditText price_et;
-
     private ListView lv;
+
+    // fields - other
     private AppointmentAdapter appointmentAdapter;
+    private File sourceFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializeLayout();
 
-        //setup adapter
-        appointmentAdapter = new AppointmentAdapter(MainActivity.this, DatabaseHandler.getInstance());
-        lv.setAdapter(appointmentAdapter);
+        sourceFile = new File(getApplicationContext().getFilesDir(), DatabaseHandler.FILE_NAME);
+        initializeLayout();
 
         addButton.setOnClickListener(new View.OnClickListener()
         {
@@ -64,19 +64,20 @@ public class MainActivity extends AppCompatActivity
         //load DB
         DatabaseHandler db = DatabaseHandler.getInstance();
 
-        File databaseCSV = new File(DatabaseHandler.SOURCE);
-
         try
         {
-            databaseCSV.createNewFile();
+            sourceFile.createNewFile();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
 
-        db.loadDb();
+        db.loadDb(sourceFile);
 
+        // setup adapter
+        appointmentAdapter = new AppointmentAdapter(MainActivity.this, DatabaseHandler.getInstance());
+        lv.setAdapter(appointmentAdapter);
     }
 
     @Override
@@ -84,9 +85,9 @@ public class MainActivity extends AppCompatActivity
     {
         super.onStop();
 
-        // save DB on disk
-        DatabaseHandler db  = DatabaseHandler.getInstance();
-        db.saveDb();
+        // save DB to disk
+        DatabaseHandler db = DatabaseHandler.getInstance();
+        db.saveDb(sourceFile);
     }
 
     public void initializeLayout()

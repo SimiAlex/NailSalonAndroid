@@ -1,20 +1,29 @@
 package alexsimi.com.github.nailsalon.controller;
 
+import android.app.Application;
+import android.content.Context;
+import android.util.Log;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import alexsimi.com.github.nailsalon.MainActivity;
 import alexsimi.com.github.nailsalon.model.Appointment;
 
 public class DatabaseHandler implements DatabaseCRUD<Appointment>
 {
     //fields
-    public static final String SOURCE = "database.csv";
-    private  List<Appointment> appointments = new ArrayList<Appointment>();
+    public static final String FILE_NAME = "database.csv";
+    private static List<Appointment> appointments = new ArrayList<Appointment>();
     private static final DatabaseHandler instance = new DatabaseHandler();
 
     //constructor
-    private DatabaseHandler(){}
+    private DatabaseHandler()
+    {
+        // leave this empty
+    }
 
     //methods
     public static DatabaseHandler getInstance()
@@ -22,9 +31,9 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
         return instance;
     }
 
-    public void loadDb()
+    public void loadDb(File sourceFile)
     {
-        try(BufferedReader reader  = new BufferedReader(new FileReader(SOURCE)))
+        try (BufferedReader reader  = new BufferedReader(new FileReader(sourceFile)))
         {
             String row;
             while((row = reader.readLine()) != null)
@@ -39,28 +48,30 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
                 appointment = new Appointment(id, name, date, procedure, price);
                 appointments.add(appointment);
             }
-        }catch (IOException e)
+        }
+        catch (IOException e)
         {
-            System.out.println("no file");
+            Log.d("NailSalon", "loadDb: failure\n" + e.toString());
         }
     }
 
-    public void saveDb()
+    public void saveDb(File sourceFile)
     {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(SOURCE)))
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(sourceFile)))
         {
             String oneRow;
-            for (Appointment app:appointments)
+            for (Appointment app : appointments)
             {
-                oneRow = app.getId() + "," + app.getName() + "," + app.getTime() + "," +app.getProcedure() + "," + app.getPrice();
+                oneRow = app.getId() + "," + app.getName() + "," + app.getTime() + "," + app.getProcedure() + "," + app.getPrice();
                 writer.write(oneRow);
                 writer.newLine();
                 writer.flush();
             }
-
-        }catch (IOException e)
+        }
+        catch (IOException e)
         {
-            System.out.println("no file");
+            e.printStackTrace();
+            Log.d("NailSalon", "saveDb: failure\n" + e.toString());
         }
     }
 
