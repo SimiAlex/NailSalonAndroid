@@ -7,4 +7,17 @@ public class Validation {
         String modifiedString = s.replaceAll(","," ");
         return modifiedString;
     }
+
+    public static boolean validateIdInput(String s)
+    {
+        try
+        {
+            Integer.parseInt(s);
+            return true;
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
+    }
 }

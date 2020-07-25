@@ -7,19 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
-import alexsimi.com.github.nailsalon.model.Appointment;
-import alexsimi.com.github.nailsalon.utils.Validation;
 import alexsimi.com.github.nailsalon.view.AppointmentAdapter;
 
 public class MainActivity extends AppCompatActivity
@@ -27,12 +20,8 @@ public class MainActivity extends AppCompatActivity
     //fields - layout
     private Button resetButton;
     private Button addButton;
-    private EditText id_et;
-    private EditText name_et;
-    private EditText date_et;
-    private EditText time_et;
-    private EditText procedure_et;
-    private EditText price_et;
+    private Button updateButton;
+    private Button deleteButton;
     private ListView lv;
 
 
@@ -94,13 +83,9 @@ public class MainActivity extends AppCompatActivity
     public void initializeLayout()
     {
         resetButton = findViewById(R.id.resetButton);
-        addButton = findViewById(R.id.AddButton);
-        id_et = findViewById(R.id.ClientID);
-        name_et = findViewById(R.id.ClientName);
-        date_et = findViewById(R.id.AppointmentDate);
-        time_et = findViewById(R.id.AppointmentTime);
-        procedure_et = findViewById(R.id.Procedure);
-        price_et = findViewById(R.id.Price);
+        addButton = findViewById(R.id.add_button_AAA);
+        updateButton = findViewById(R.id.updateButton);
+        deleteButton = findViewById(R.id.deleteButton);
         lv = findViewById(R.id.lv_appointments);
 
     }
