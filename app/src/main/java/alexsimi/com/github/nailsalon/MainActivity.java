@@ -32,43 +32,27 @@ public class MainActivity extends AppCompatActivity
     private EditText procedure_et;
     private EditText price_et;
     private ListView lv;
+    private Button deleteButton;
 
     // fields - other
     private AppointmentAdapter appointmentAdapter;
     private File sourceFile;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         sourceFile = new File(getApplicationContext().getFilesDir(), DatabaseHandler.FILE_NAME);
         initializeLayout();
 
-        addButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                onAddButtonClicked();
-            }
-        });
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-
         // create the .csv file if it doesn't exist (for first time users)
-        try
-        {
+        try {
             sourceFile.createNewFile();
-        }
-        catch (IOException e)
-        {
-            Log.e("NailSalon", "onStart() " + e.toString());;
+        } catch (IOException e) {
+            Log.e("NailSalon", "onStart() " + e.toString());
+            ;
         }
 
         // load DB from disk
@@ -78,12 +62,27 @@ public class MainActivity extends AppCompatActivity
         // setup adapter
         appointmentAdapter = new AppointmentAdapter(MainActivity.this, DatabaseHandler.getInstance());
         lv.setAdapter(appointmentAdapter);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddButtonClicked();
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDeleteButtonClicked();
+            }
+        });
+
     }
 
     @Override
-    protected void onStop()
+    protected void onDestroy()
     {
-        super.onStop();
+        super.onDestroy();
 
         // save DB to disk
         DatabaseHandler db = DatabaseHandler.getInstance();
@@ -92,6 +91,7 @@ public class MainActivity extends AppCompatActivity
 
     public void initializeLayout()
     {
+        deleteButton = findViewById(R.id.deleteButton);
         addButton = findViewById(R.id.AddButton);
         id_et = findViewById(R.id.ClientID);
         name_et = findViewById(R.id.ClientName);
@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity
         procedure_et = findViewById(R.id.Procedure);
         price_et = findViewById(R.id.Price);
         lv = findViewById(R.id.lv_appointments);
+
     }
 
     public void onAddButtonClicked()
@@ -126,6 +127,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         // update adapter
+        lv.setAdapter(appointmentAdapter);
+    }
+
+    public void onDeleteButtonClicked()
+    {
+        DatabaseHandler db = DatabaseHandler.getInstance();
+        db.getAppointments().clear();
         lv.setAdapter(appointmentAdapter);
     }
 
