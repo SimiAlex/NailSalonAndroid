@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
 
         // load DB from disk
         DatabaseHandler db = DatabaseHandler.getInstance();
-       db.loadDb(sourceFile);
+//        db.loadDb(sourceFile);
 
         // setup adapter
         appointmentAdapter = new AppointmentAdapter(MainActivity.this, DatabaseHandler.getInstance());
