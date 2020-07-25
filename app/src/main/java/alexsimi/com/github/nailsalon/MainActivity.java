@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,11 +18,13 @@ import java.time.LocalTime;
 
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
 import alexsimi.com.github.nailsalon.model.Appointment;
+import alexsimi.com.github.nailsalon.utils.Validation;
 import alexsimi.com.github.nailsalon.view.AppointmentAdapter;
 
 public class MainActivity extends AppCompatActivity
 {
     //fields - layout
+    private Button resetButton;
     private Button addButton;
     private EditText id_et;
     private EditText name_et;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity
     private EditText procedure_et;
     private EditText price_et;
     private ListView lv;
-    private Button deleteButton;
+
 
     // fields - other
     private AppointmentAdapter appointmentAdapter;
@@ -52,12 +53,12 @@ public class MainActivity extends AppCompatActivity
             sourceFile.createNewFile();
         } catch (IOException e) {
             Log.e("NailSalon", "onStart() " + e.toString());
-            ;
+
         }
 
         // load DB from disk
         DatabaseHandler db = DatabaseHandler.getInstance();
-        db.loadDb(sourceFile);
+       db.loadDb(sourceFile);
 
         // setup adapter
         appointmentAdapter = new AppointmentAdapter(MainActivity.this, DatabaseHandler.getInstance());
@@ -70,10 +71,10 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onDeleteButtonClicked();
+                onResetButtonClicked();
             }
         });
 
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity
 
     public void initializeLayout()
     {
-        deleteButton = findViewById(R.id.deleteButton);
+        resetButton = findViewById(R.id.resetButton);
         addButton = findViewById(R.id.AddButton);
         id_et = findViewById(R.id.ClientID);
         name_et = findViewById(R.id.ClientName);
@@ -106,12 +107,12 @@ public class MainActivity extends AppCompatActivity
     public void onAddButtonClicked()
     {
         int clientId = Integer.parseInt(id_et.getText().toString());
-        String name = name_et.getText().toString();
+        String name = Validation.removeCommaFromTextFields(name_et.getText().toString());
         LocalDate date = LocalDate.parse(date_et.getText().toString());
         LocalTime time = LocalTime.parse(time_et.getText().toString());
         LocalDateTime appointmentDateTime = LocalDateTime.of(date, time);
         Log.d("NailSalon", "onAddButtonClicked: LocalDateTime = " + appointmentDateTime.toString());
-        String procedure = procedure_et.getText().toString();
+        String procedure = Validation.removeCommaFromTextFields(procedure_et.getText().toString());
         double price = Integer.parseInt(price_et.getText().toString());
 
         Appointment app = new Appointment(clientId, name, appointmentDateTime, procedure, price);
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity
         lv.setAdapter(appointmentAdapter);
     }
 
-    public void onDeleteButtonClicked()
+    public void onResetButtonClicked()
     {
         DatabaseHandler db = DatabaseHandler.getInstance();
         db.getAppointments().clear();
