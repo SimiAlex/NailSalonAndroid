@@ -19,7 +19,6 @@ import java.time.LocalTime;
 
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
 import alexsimi.com.github.nailsalon.model.Appointment;
-import alexsimi.com.github.nailsalon.utils.Validation;
 import alexsimi.com.github.nailsalon.view.AppointmentAdapter;
 
 public class MainActivity extends AppCompatActivity
@@ -106,12 +105,12 @@ public class MainActivity extends AppCompatActivity
     public void onAddButtonClicked()
     {
         int clientId = Integer.parseInt(id_et.getText().toString());
-        String name = Validation.removeCommaFromTextFields(name_et.getText().toString());
+        String name = name_et.getText().toString();
         LocalDate date = LocalDate.parse(date_et.getText().toString());
         LocalTime time = LocalTime.parse(time_et.getText().toString());
         LocalDateTime appointmentDateTime = LocalDateTime.of(date, time);
         Log.d("NailSalon", "onAddButtonClicked: LocalDateTime = " + appointmentDateTime.toString());
-        String procedure = Validation.removeCommaFromTextFields(procedure_et.getText().toString());
+        String procedure = procedure_et.getText().toString();
         double price = Integer.parseInt(price_et.getText().toString());
 
         Appointment app = new Appointment(clientId, name, appointmentDateTime, procedure, price);
