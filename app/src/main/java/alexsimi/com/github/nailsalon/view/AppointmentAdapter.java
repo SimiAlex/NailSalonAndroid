@@ -16,8 +16,8 @@ import alexsimi.com.github.nailsalon.R;
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
 import alexsimi.com.github.nailsalon.model.Appointment;
 
-public class AppointmentAdapter extends BaseAdapter {
-
+public class AppointmentAdapter extends BaseAdapter
+{
     //fields
     private Activity myActivity;
     private DatabaseHandler db;
