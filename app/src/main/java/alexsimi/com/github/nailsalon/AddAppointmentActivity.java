@@ -2,6 +2,7 @@ package alexsimi.com.github.nailsalon;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,6 @@ public class AddAppointmentActivity extends AppCompatActivity
     private TextInputLayout price_til;
     private Button add_client_button;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -42,6 +42,7 @@ public class AddAppointmentActivity extends AppCompatActivity
                 onAddButtonClicked();
             }
         });
+
 
     }
 
@@ -136,29 +137,25 @@ public class AddAppointmentActivity extends AppCompatActivity
 
     public void onAddButtonClicked()
     {
-        if(validateID() & validatePrice() & validateStringField(name_til) & validateStringField(procedure_til) & validateDate() & validateTime())
+        if(validateID() & validatePrice() & validateStringField(name_til) &
+                validateStringField(procedure_til) & validateDate() & validateTime())
         {
-
             int clientId = Integer.parseInt(id_til.getEditText().getText().toString());
             String name = Validation.removeCommaFromTextFields(name_til.getEditText().getText().toString());
-            LocalDate date = LocalDate.parse(date_til.getEditText().getText().toString());
-            LocalTime time = LocalTime.parse(time_til.getEditText().getText().toString());
-            LocalDateTime appointmentDateTime = LocalDateTime.of(date, time);
             String procedure = Validation.removeCommaFromTextFields(procedure_til.getEditText().getText().toString());
             double price = Double.parseDouble(price_til.getEditText().getText().toString());
 
-            Appointment app = new Appointment(clientId, name, appointmentDateTime, procedure, price);
-            DatabaseHandler db = DatabaseHandler.getInstance();
-            boolean wasAdded = db.addRecord(app);
-            if(wasAdded)
-            {
-                Toast.makeText(this,"Record was added",Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                Toast.makeText(this,"Invalid record",Toast.LENGTH_SHORT).show();
-            }
-        }
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("id", clientId);
+            intent.putExtra("name", name);
+            intent.putExtra("date", date_til.getEditText().getText().toString());
+            intent.putExtra("time", time_til.getEditText().getText().toString());
+            intent.putExtra("procedure", procedure);
+            intent.putExtra("price", price);
 
+            startActivity(intent);
+            finish();
+        }
     }
+
 }

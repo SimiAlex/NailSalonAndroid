@@ -1,7 +1,5 @@
 package alexsimi.com.github.nailsalon.controller;
 
-import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 import java.io.*;
@@ -9,14 +7,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexsimi.com.github.nailsalon.MainActivity;
 import alexsimi.com.github.nailsalon.model.Appointment;
 
 public class DatabaseHandler implements DatabaseCRUD<Appointment>
 {
     //fields
-    public static final String FILE_NAME = "database.csv";
-    private static List<Appointment> appointments = new ArrayList<Appointment>();
+    //public static final String FILE_NAME = "database.csv";
+    private final List<Appointment> appointments = new ArrayList<Appointment>();
     private static final DatabaseHandler instance = new DatabaseHandler();
 
     //constructor
@@ -45,6 +42,7 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
                 LocalDateTime date = LocalDateTime.parse(oneRow[2]);
                 String procedure = oneRow[3];
                 double price = Double.parseDouble(oneRow[4]);
+
                 appointment = new Appointment(id, name, date, procedure, price);
                 appointments.add(appointment);
             }
