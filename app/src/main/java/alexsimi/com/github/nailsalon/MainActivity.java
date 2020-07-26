@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity
 
         // load DB from disk
         DatabaseHandler db = DatabaseHandler.getInstance();
-//        db.loadDb(sourceFile);
+        db.loadDb(sourceFile);
 
         // setup adapter
         appointmentAdapter = new AppointmentAdapter(MainActivity.this, DatabaseHandler.getInstance());
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // log
+        Log.d("NailSalon", "onCreate() was called");
+
     }
 
     @Override
@@ -78,6 +82,19 @@ public class MainActivity extends AppCompatActivity
         // save DB to disk
         DatabaseHandler db = DatabaseHandler.getInstance();
         db.saveDb(sourceFile);
+
+        // log
+        Log.d("NailSalon", "onDestroy() was called");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        lv.setAdapter(appointmentAdapter);
+
+        // log
+        Log.d("NailSalon", "onResume() was called");
     }
 
     public void initializeLayout()
@@ -95,29 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(this, AddAppointmentActivity.class);
         startActivity(intent);
-//        int clientId = Integer.parseInt(id_et.getText().toString());
-//        String name = Validation.removeCommaFromTextFields(name_et.getText().toString());
-//        LocalDate date = LocalDate.parse(date_et.getText().toString());
-//        LocalTime time = LocalTime.parse(time_et.getText().toString());
-//        LocalDateTime appointmentDateTime = LocalDateTime.of(date, time);
-//        Log.d("NailSalon", "onAddButtonClicked: LocalDateTime = " + appointmentDateTime.toString());
-//        String procedure = Validation.removeCommaFromTextFields(procedure_et.getText().toString());
-//        double price = Integer.parseInt(price_et.getText().toString());
-//
-//        Appointment app = new Appointment(clientId, name, appointmentDateTime, procedure, price);
-//        DatabaseHandler db = DatabaseHandler.getInstance();
-//        boolean wasAdded = db.addRecord(app);
-//        if(wasAdded)
-//        {
-//            Toast.makeText(this,"Record was added",Toast.LENGTH_SHORT).show();
-//        }
-//        else
-//        {
-//            Toast.makeText(this,"Invalid record",Toast.LENGTH_SHORT).show();
-//        }
-//
-//        // update adapter
-//        lv.setAdapter(appointmentAdapter);
+
     }
 
     public void onResetButtonClicked()
