@@ -32,7 +32,7 @@ public class AppointmentAdapter extends BaseAdapter
         this.myActivity = myActivity;
         this.db = db;
         dtf_date = DateTimeFormatter.ofPattern("dd.MM.yy");
-        dtf_time = DateTimeFormatter.ofPattern("hh:mm");
+        dtf_time = DateTimeFormatter.ofPattern("HH:mm");
     }
 
     //methods from parent
@@ -73,7 +73,6 @@ public class AppointmentAdapter extends BaseAdapter
 
         id_app.setText(Integer.toString(app.getId()));
         name_app.setText(app.getName());
-        Log.d("NailSalon", "getView: " + app.getTime().toString());
 
         // date and time setup
         date_app.setText(dtf_date.format(app.getTime()));

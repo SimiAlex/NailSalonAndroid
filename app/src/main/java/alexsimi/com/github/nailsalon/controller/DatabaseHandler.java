@@ -11,23 +11,17 @@ import alexsimi.com.github.nailsalon.model.Appointment;
 
 public class DatabaseHandler implements DatabaseCRUD<Appointment>
 {
-    //fields
-    //public static final String FILE_NAME = "database.csv";
-    private final List<Appointment> appointments = new ArrayList<Appointment>();
-    private static final DatabaseHandler instance = new DatabaseHandler();
+    // fields
+    public static final String FILE_NAME = "database.csv";
+    private List<Appointment> appointments;
 
-    //constructor
-    private DatabaseHandler()
+    // constructor
+    public DatabaseHandler()
     {
-        // leave this empty
+        appointments = new ArrayList<Appointment>();
     }
 
     //methods
-    public static DatabaseHandler getInstance()
-    {
-        return instance;
-    }
-
     public void loadDb(File sourceFile)
     {
         try (BufferedReader reader  = new BufferedReader(new FileReader(sourceFile)))
@@ -46,6 +40,7 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
                 appointment = new Appointment(id, name, date, procedure, price);
                 appointments.add(appointment);
             }
+            Log.d("NailSalon", "loadDb() has finished, list size = " + appointments.size());
         }
         catch (IOException e)
         {
@@ -73,7 +68,7 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
         }
     }
 
-    public  List<Appointment> getAppointments()
+    public List<Appointment> getAppointments()
     {
         return appointments;
     }

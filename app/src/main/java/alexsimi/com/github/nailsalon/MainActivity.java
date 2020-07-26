@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     // fields - other
     private AppointmentAdapter appointmentAdapter;
     private File sourceFile;
-    private final String DATABASE_NAME = "database.csv";
+    private DatabaseHandler dbh;
 
 
     @Override
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sourceFile = new File(getApplicationContext().getFilesDir(), DATABASE_NAME);
+        sourceFile = new File(getApplicationContext().getFilesDir(), DatabaseHandler.FILE_NAME);
         initializeLayout();
 
         // create the .csv file if it doesn't exist (for first time users)
@@ -55,13 +55,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         // load DB from disk
-        DatabaseHandler db = DatabaseHandler.getInstance();
-        Log.d("NailSalon", "onCreate() was called\tDB size before loadDb() = " + db.getAppointments().size());
-        db.loadDb(sourceFile);
-        Log.d("NailSalon", "onCreate() was called\tDB size after loadDb() = " + db.getAppointments().size());
+        dbh = new DatabaseHandler();
+        Log.d("NailSalon", "onCreate() was called\tDB size before loadDb() = " + dbh.getAppointments().size());
+        dbh.loadDb(sourceFile);
+        Log.d("NailSalon", "onCreate() was called\tDB size after loadDb() = " + dbh.getAppointments().size());
 
         // setup adapter
-        appointmentAdapter = new AppointmentAdapter(MainActivity.this, db);
+        appointmentAdapter = new AppointmentAdapter(MainActivity.this, dbh);
         lv.setAdapter(appointmentAdapter);
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity
 
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 onResetButtonClicked();
             }
         });
@@ -95,11 +96,22 @@ public class MainActivity extends AppCompatActivity
             LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
 
             Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
-            db.addRecord(appointment);
+            dbh.addRecord(appointment);
 
             // update ListView
-            lv.setAdapter(appointmentAdapter);
+            appointmentAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+
+        // save DB to disk
+        dbh.saveDb(sourceFile);
+
+        Log.d("NailSalon", "onStop() was called\tDB size = " + dbh.getAppointments().size());
     }
 
     @Override
@@ -107,22 +119,17 @@ public class MainActivity extends AppCompatActivity
     {
         super.onDestroy();
 
-        // save DB to disk
-        DatabaseHandler db = DatabaseHandler.getInstance();
-        db.saveDb(sourceFile);
-
         // log
-        Log.d("NailSalon", "onDestroy() was called\tDB size = " + db.getAppointments().size());
+        Log.d("NailSalon", "onDestroy() was called\tDB size = " + dbh.getAppointments().size());
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        lv.setAdapter(appointmentAdapter);
 
         // log
-        Log.d("NailSalon", "onResume() was called\tDB size = " + DatabaseHandler.getInstance().getAppointments().size());
+        Log.d("NailSalon", "onResume() was called");
     }
 
     public void initializeLayout()
@@ -132,20 +139,20 @@ public class MainActivity extends AppCompatActivity
         updateButton = findViewById(R.id.updateButton);
         deleteButton = findViewById(R.id.deleteButton);
         lv = findViewById(R.id.lv_appointments);
-
     }
 
     public void onAddButtonClicked()
     {
         Intent intent = new Intent(this, AddAppointmentActivity.class);
         startActivity(intent);
+
+        finish();
     }
 
     public void onResetButtonClicked()
     {
-        DatabaseHandler db = DatabaseHandler.getInstance();
-        db.getAppointments().clear();
-        lv.setAdapter(appointmentAdapter);
+        dbh.getAppointments().clear();
+        appointmentAdapter.notifyDataSetChanged();
     }
 
 
