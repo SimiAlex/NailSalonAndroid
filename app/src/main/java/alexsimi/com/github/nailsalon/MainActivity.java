@@ -1,5 +1,7 @@
 package alexsimi.com.github.nailsalon;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,13 +31,12 @@ public class MainActivity extends AppCompatActivity
     private Button deleteButton;
     private ListView lv;
 
-
     // fields - other
     private AppointmentAdapter appointmentAdapter;
     private File sourceFile;
     private DatabaseHandler dbh;
 
-
+    // methods - activity lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -78,29 +80,6 @@ public class MainActivity extends AppCompatActivity
                 onResetButtonClicked();
             }
         });
-
-        // retrieve data from other activities
-        Bundle bundle = getIntent().getExtras();
-
-        if (bundle != null)
-        {
-            int id = bundle.getInt("id", 0);
-            String name = bundle.getString("name");
-            String date = bundle.getString("date");
-            String time = bundle.getString("time");
-            String procedure = bundle.getString("procedure");
-            double price = bundle.getDouble("price", 0);
-
-            LocalDate dateLd = LocalDate.parse(date);
-            LocalTime timeLt = LocalTime.parse(time);
-            LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
-
-            Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
-            dbh.addRecord(appointment);
-
-            // update ListView
-            appointmentAdapter.notifyDataSetChanged();
-        }
     }
 
     @Override
@@ -124,29 +103,46 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume()
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {
-        super.onResume();
+        super.onActivityResult(requestCode, resultCode, data);
 
-        // log
-        Log.d("NailSalon", "onResume() was called");
+        if (requestCode == 1 && resultCode == RESULT_OK)
+        {
+            int id = data.getIntExtra("id", 0);
+            String name = data.getStringExtra("name");
+            String date = data.getStringExtra("date");
+            String time = data.getStringExtra("time");
+            String procedure = data.getStringExtra("procedure");
+            double price = data.getDoubleExtra("price", 0);
+
+            LocalDate dateLd = LocalDate.parse(date);
+            LocalTime timeLt = LocalTime.parse(time);
+            LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
+
+            Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
+            dbh.addRecord(appointment);
+
+            // update ListView
+            appointmentAdapter.notifyDataSetChanged();
+
+            // display a toast message
+            Toast.makeText(this, "Appointment added", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            // display a toast message
+            Toast.makeText(this, "No appointment added", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    public void initializeLayout()
-    {
-        resetButton = findViewById(R.id.resetButton);
-        addButton = findViewById(R.id.add_button_AAA);
-        updateButton = findViewById(R.id.updateButton);
-        deleteButton = findViewById(R.id.deleteButton);
-        lv = findViewById(R.id.lv_appointments);
-    }
-
+    // methods - handle button clicks
     public void onAddButtonClicked()
     {
-        Intent intent = new Intent(this, AddAppointmentActivity.class);
-        startActivity(intent);
+        Intent addIntent = new Intent(MainActivity.this, AddAppointmentActivity.class);
 
-        finish();
+        int requestCode = 1;
+        startActivityForResult(addIntent, requestCode);
     }
 
     public void onResetButtonClicked()
@@ -155,6 +151,15 @@ public class MainActivity extends AppCompatActivity
         appointmentAdapter.notifyDataSetChanged();
     }
 
+    // methods - other
+    public void initializeLayout()
+    {
+        resetButton = findViewById(R.id.resetButton);
+        addButton = findViewById(R.id.add_button_AAA);
+        updateButton = findViewById(R.id.updateButton);
+        deleteButton = findViewById(R.id.deleteButton);
+        lv = findViewById(R.id.lv_appointments);
+    }
 
 
 }

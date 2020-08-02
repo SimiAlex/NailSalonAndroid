@@ -43,22 +43,37 @@ public class AddAppointmentActivity extends AppCompatActivity
                 onAddButtonClicked();
             }
         });
-
-
     }
 
-    public void initializeLayout()
+    // methods - buttons behaviour
+    public void onAddButtonClicked()
     {
-        id_til = findViewById(R.id.client_id_til);
-        name_til = findViewById(R.id.client_name_til);
-        date_til = findViewById(R.id.appointment_date_til);
-        time_til = findViewById(R.id.appointment_time_til);
-        procedure_til = findViewById(R.id.procedure_til);
-        price_til = findViewById(R.id.price_til);
-        add_client_button = findViewById(R.id.add_button_AAA);
+        if(validateID() & validatePrice() & validateStringField(name_til) &
+                validateStringField(procedure_til) & validateDate() & validateTime())
+        {
+            Log.d("NailSalon", "AddAppointmentActivity - onAddButtonClicked: I am in the if statement");
+            int clientId = Integer.parseInt(id_til.getEditText().getText().toString());
+            String name = Validation.removeCommaFromTextFields(name_til.getEditText().getText().toString());
+            String procedure = Validation.removeCommaFromTextFields(procedure_til.getEditText().getText().toString());
+            double price = Double.parseDouble(price_til.getEditText().getText().toString());
+
+            Intent addAppointmentIntent = new Intent(this, MainActivity.class);
+            addAppointmentIntent.putExtra("id", clientId);
+            addAppointmentIntent.putExtra("name", name);
+            addAppointmentIntent.putExtra("date", date_til.getEditText().getText().toString());
+            addAppointmentIntent.putExtra("time", time_til.getEditText().getText().toString());
+            addAppointmentIntent.putExtra("procedure", procedure);
+            addAppointmentIntent.putExtra("price", price);
+
+            // set result to pass to MainActivity
+            setResult(RESULT_OK, addAppointmentIntent);
+
+            // finish current activity without starting a new MainActivity
+            finish();
+        }
     }
 
-    //validation methods
+    // methods - validation
     private boolean validateID()
     {
         boolean isValid;
@@ -136,36 +151,15 @@ public class AddAppointmentActivity extends AppCompatActivity
         }
     }
 
-    public void onAddButtonClicked()
+    // methods - other
+    public void initializeLayout()
     {
-        if(validateID() & validatePrice() & validateStringField(name_til) &
-                validateStringField(procedure_til) & validateDate() & validateTime())
-        {
-            int clientId = Integer.parseInt(id_til.getEditText().getText().toString());
-            String name = Validation.removeCommaFromTextFields(name_til.getEditText().getText().toString());
-            String procedure = Validation.removeCommaFromTextFields(procedure_til.getEditText().getText().toString());
-            double price = Double.parseDouble(price_til.getEditText().getText().toString());
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("id", clientId);
-            intent.putExtra("name", name);
-            intent.putExtra("date", date_til.getEditText().getText().toString());
-            intent.putExtra("time", time_til.getEditText().getText().toString());
-            intent.putExtra("procedure", procedure);
-            intent.putExtra("price", price);
-
-            startActivity(intent);
-            finish();
-        }
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-
-        Log.d("NailSalon", "onDestroy() was called from AddAppointmentActivity");
+        id_til = findViewById(R.id.client_id_til);
+        name_til = findViewById(R.id.client_name_til);
+        date_til = findViewById(R.id.appointment_date_til);
+        time_til = findViewById(R.id.appointment_time_til);
+        procedure_til = findViewById(R.id.procedure_til);
+        price_til = findViewById(R.id.price_til);
+        add_client_button = findViewById(R.id.add_button_AAA);
     }
 }
