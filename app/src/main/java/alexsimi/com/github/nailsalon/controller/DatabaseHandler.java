@@ -12,6 +12,7 @@ import alexsimi.com.github.nailsalon.model.Appointment;
 public class DatabaseHandler implements DatabaseCRUD<Appointment>
 {
     // fields
+    public static final String TAG = "NailSalon";
     public static final String FILE_NAME = "database.csv";
     private List<Appointment> appointments;
 
@@ -21,7 +22,8 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
         appointments = new ArrayList<Appointment>();
     }
 
-    //methods
+    // methods
+    @Override
     public void loadDb(File sourceFile)
     {
         try (BufferedReader reader  = new BufferedReader(new FileReader(sourceFile)))
@@ -40,14 +42,14 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
                 appointment = new Appointment(id, name, date, procedure, price);
                 appointments.add(appointment);
             }
-            Log.d("NailSalon", "loadDb() has finished, list size = " + appointments.size());
         }
         catch (IOException e)
         {
-            Log.d("NailSalon", "loadDb: failure\n" + e.toString());
+            Log.d(TAG, "loadDb: failure\n" + e.toString());
         }
     }
 
+    @Override
     public void saveDb(File sourceFile)
     {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(sourceFile)))
@@ -64,7 +66,7 @@ public class DatabaseHandler implements DatabaseCRUD<Appointment>
         catch (IOException e)
         {
             e.printStackTrace();
-            Log.d("NailSalon", "saveDb: failure\n" + e.toString());
+            Log.d(TAG, "saveDb: failure\n" + e.toString());
         }
     }
 

@@ -10,7 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".AddAppointmentActivity" android:label="Add Appointment" android:parentActivityName=".MainActivity">
+        <activity android:name=".AddAppointmentActivity"
+            android:label="Add Appointment"
+            android:parentActivityName=".MainActivity">
 
         </activity>
 

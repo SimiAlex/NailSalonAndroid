@@ -161,5 +161,4 @@ public class MainActivity extends AppCompatActivity
         lv = findViewById(R.id.lv_appointments);
     }
 
-
 }
