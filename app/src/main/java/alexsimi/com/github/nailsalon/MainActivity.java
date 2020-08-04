@@ -20,6 +20,7 @@ import java.time.LocalTime;
 
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
 import alexsimi.com.github.nailsalon.model.Appointment;
+import alexsimi.com.github.nailsalon.utils.Validation;
 import alexsimi.com.github.nailsalon.view.AppointmentAdapter;
 
 public class MainActivity extends AppCompatActivity
@@ -80,6 +81,13 @@ public class MainActivity extends AppCompatActivity
                 onResetButtonClicked();
             }
         });
+
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUpdateButtonClicked();
+            }
+        });
     }
 
     @Override
@@ -91,15 +99,6 @@ public class MainActivity extends AppCompatActivity
         dbh.saveDb(sourceFile);
 
         Log.d("NailSalon", "onStop() was called\tDB size = " + dbh.getAppointments().size());
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-
-        // log
-        Log.d("NailSalon", "onDestroy() was called\tDB size = " + dbh.getAppointments().size());
     }
 
     @Override
@@ -129,11 +128,33 @@ public class MainActivity extends AppCompatActivity
             // display a toast message
             Toast.makeText(this, "Appointment added", Toast.LENGTH_SHORT).show();
         }
-        else
+        else if (requestCode == 2 && resultCode == RESULT_OK)
         {
+            int id = data.getIntExtra("id", 0);
+            String name = data.getStringExtra("name");
+            String date = data.getStringExtra("date");
+            String time = data.getStringExtra("time");
+            String procedure = data.getStringExtra("procedure");
+            double price = data.getDoubleExtra("price", 0);
+
+            LocalDate dateLd = LocalDate.parse(date);
+            LocalTime timeLt = LocalTime.parse(time);
+            LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
+
+            Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
+            dbh.updateRecord(Validation.getIndexFromID(dbh.getAppointments(), id), appointment);
+
+            // update ListView
+            appointmentAdapter.notifyDataSetChanged();
+
             // display a toast message
-            Toast.makeText(this, "No appointment added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Appointment updated", Toast.LENGTH_SHORT).show();
         }
+//        else
+//        {
+//            // display a toast message
+//            Toast.makeText(this, "No appointment updated", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     // methods - handle button clicks
@@ -149,6 +170,13 @@ public class MainActivity extends AppCompatActivity
     {
         dbh.getAppointments().clear();
         appointmentAdapter.notifyDataSetChanged();
+    }
+
+    public void onUpdateButtonClicked()
+    {
+        Intent updateIntent = new Intent(MainActivity.this, UpdateActivity.class);
+        int requestCode = 2;
+        startActivityForResult(updateIntent, requestCode);
     }
 
     // methods - other

@@ -4,22 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
-import alexsimi.com.github.nailsalon.model.Appointment;
 import alexsimi.com.github.nailsalon.utils.Validation;
 
-public class AddAppointmentActivity extends AppCompatActivity
+public class UpdateActivity extends AppCompatActivity
 {
     //fields layout
     private TextInputLayout id_til;
@@ -28,25 +20,25 @@ public class AddAppointmentActivity extends AppCompatActivity
     private TextInputLayout time_til;
     private TextInputLayout procedure_til;
     private TextInputLayout price_til;
-    private Button add_client_button;
+    private Button update_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_appointment);
+        setContentView(R.layout.update_appointment);
         initializeLayout();
 
-        add_client_button.setOnClickListener(new View.OnClickListener() {
+        update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddButtonClicked();
+                onUpdateButtonClicked();
             }
         });
     }
 
     // methods - buttons behaviour
-    public void onAddButtonClicked()
+    public void onUpdateButtonClicked()
     {
         if(validateID() & validatePrice() & validateStringField(name_til) &
                 validateStringField(procedure_til) & validateDate() & validateTime())
@@ -56,16 +48,16 @@ public class AddAppointmentActivity extends AppCompatActivity
             String procedure = Validation.removeCommaFromTextFields(procedure_til.getEditText().getText().toString());
             double price = Double.parseDouble(price_til.getEditText().getText().toString());
 
-            Intent addAppointmentIntent = new Intent(this, MainActivity.class);
-            addAppointmentIntent.putExtra("id", clientId);
-            addAppointmentIntent.putExtra("name", name);
-            addAppointmentIntent.putExtra("date", date_til.getEditText().getText().toString());
-            addAppointmentIntent.putExtra("time", time_til.getEditText().getText().toString());
-            addAppointmentIntent.putExtra("procedure", procedure);
-            addAppointmentIntent.putExtra("price", price);
+            Intent updateAppointmentIntent = new Intent(this, MainActivity.class);
+            updateAppointmentIntent.putExtra("id", clientId);
+            updateAppointmentIntent.putExtra("name", name);
+            updateAppointmentIntent.putExtra("date", date_til.getEditText().getText().toString());
+            updateAppointmentIntent.putExtra("time", time_til.getEditText().getText().toString());
+            updateAppointmentIntent.putExtra("procedure", procedure);
+            updateAppointmentIntent.putExtra("price", price);
 
             // set result to pass to MainActivity
-            setResult(RESULT_OK, addAppointmentIntent);
+            setResult(RESULT_OK, updateAppointmentIntent);
 
             // finish current activity without starting a new MainActivity
             finish();
@@ -159,6 +151,6 @@ public class AddAppointmentActivity extends AppCompatActivity
         time_til = findViewById(R.id.appointment_time_til);
         procedure_til = findViewById(R.id.procedure_til);
         price_til = findViewById(R.id.price_til);
-        add_client_button = findViewById(R.id.add_button_AAA);
+        update_button = findViewById(R.id.update_button_UA);
     }
 }

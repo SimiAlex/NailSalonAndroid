@@ -9,20 +9,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".AddAppointmentActivity"
+        <activity android:name=".UpdateActivity" android:label="Update appointment" android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".AddAppointmentActivity"
             android:label="Add Appointment"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
-
-        <activity android:name=".MainActivity" android:label="Appointments" >
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="Appointments">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

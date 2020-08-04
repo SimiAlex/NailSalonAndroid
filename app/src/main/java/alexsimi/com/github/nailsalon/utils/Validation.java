@@ -3,6 +3,9 @@ package alexsimi.com.github.nailsalon.utils;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+
+import alexsimi.com.github.nailsalon.model.Appointment;
 
 public class Validation {
 
@@ -74,6 +77,16 @@ public class Validation {
         {
             return false;
         }
+    }
+
+    public static int getIndexFromID(List<Appointment> appointments, int ID)
+    {
+        for (Appointment a: appointments)
+        {
+            if(a.getId() == ID)
+                return appointments.indexOf(a);
+        }
+        return -1;
     }
 
 }
