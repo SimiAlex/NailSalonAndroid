@@ -1,11 +1,13 @@
 package alexsimi.com.github.nailsalon.view;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.time.LocalDate;
@@ -62,6 +64,7 @@ public class AppointmentAdapter extends BaseAdapter
         LayoutInflater inflater = LayoutInflater.from(myActivity);
         oneAppointmentView = inflater.inflate(R.layout.appointment_item,parent,false);
 
+        LinearLayout ll = oneAppointmentView.findViewById(R.id.appItem_LinearLayout_AI);
         TextView id_app = oneAppointmentView.findViewById(R.id.id_tv);
         TextView name_app = oneAppointmentView.findViewById(R.id.name_tv);
         TextView date_app = oneAppointmentView.findViewById(R.id.date_tv);
@@ -77,6 +80,10 @@ public class AppointmentAdapter extends BaseAdapter
         // date and time setup
         date_app.setText(dtf_date.format(app.getTime()));
         time_app.setText(dtf_time.format(app.getTime()));
+        if (app.getTime().isBefore(LocalDateTime.now()))
+        {
+            ll.setBackgroundColor(Color.parseColor("#CAD3C8"));
+        }
 
         procedure_app.setText(app.getProcedure());
         price_app.setText(String.format("%.0f", app.getPrice()));

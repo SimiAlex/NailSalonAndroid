@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
 import alexsimi.com.github.nailsalon.model.Appointment;
@@ -59,9 +62,7 @@ public class MainActivity extends AppCompatActivity
 
         // load DB from disk
         dbh = new DatabaseHandler();
-        Log.d("NailSalon", "onCreate() was called\tDB size before loadDb() = " + dbh.getAppointments().size());
         dbh.loadDb(sourceFile);
-        Log.d("NailSalon", "onCreate() was called\tDB size after loadDb() = " + dbh.getAppointments().size());
 
         // setup adapter
         appointmentAdapter = new AppointmentAdapter(MainActivity.this, dbh);
@@ -127,9 +128,6 @@ public class MainActivity extends AppCompatActivity
                 Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
                 dbh.addRecord(appointment);
 
-                // update ListView
-                appointmentAdapter.notifyDataSetChanged();
-
                 // display a toast message
                 Toast.makeText(this, "Appointment added", Toast.LENGTH_SHORT).show();
             }
@@ -159,9 +157,6 @@ public class MainActivity extends AppCompatActivity
                 Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
                 dbh.updateRecord(Validation.getIndexFromID(dbh.getAppointments(), id), appointment);
 
-                // update ListView
-                appointmentAdapter.notifyDataSetChanged();
-
                 // display a toast message
                 Toast.makeText(this, "Appointment updated", Toast.LENGTH_SHORT).show();
             }
@@ -179,15 +174,17 @@ public class MainActivity extends AppCompatActivity
             if(index != -1)
             {
                 dbh.deleteRecord(index);
-                appointmentAdapter.notifyDataSetChanged();
                 Toast.makeText(this, "Appointment deleted", Toast.LENGTH_SHORT).show();
             }
             else
             {
                 Toast.makeText(this, "Invalid ID", Toast.LENGTH_SHORT).show();
             }
-
         }
+
+        // sort database after each operation
+        Collections.sort(dbh.getAppointments(), (a1, a2)-> a1.getTime().compareTo(a2.getTime()));
+        appointmentAdapter.notifyDataSetChanged();
     }
 
     // methods - handle button clicks
@@ -218,6 +215,15 @@ public class MainActivity extends AppCompatActivity
         int requestCode = 3;
         startActivityForResult(deleteIntent, requestCode);
     }
+
+//    public void onSwitchStateChangedChecked()
+//    {
+//        List<Appointment> activeAppointments = dbh.getAppointments()
+//                .stream()
+//                .filter(appointment -> appointment.getTime().isAfter(LocalDateTime.now()))
+//                .collect(Collectors.toList());
+//    }
+
 
     // methods - other
     public void initializeLayout()

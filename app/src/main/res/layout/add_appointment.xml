@@ -102,11 +102,4 @@
         android:layout_gravity="center"
         android:text="Add client" />
 
-    <Button
-        android:id="@+id/back_button_AAA"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Back" />
-
 </LinearLayout>
