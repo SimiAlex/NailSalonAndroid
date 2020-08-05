@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity
                 onUpdateButtonClicked();
             }
         });
+
+        deleteButton.setOnClickListener(v -> onDeleteButtonClicked());
     }
 
     @Override
