@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import alexsimi.com.github.nailsalon.R;
 import alexsimi.com.github.nailsalon.controller.DatabaseHandler;
@@ -22,14 +23,14 @@ public class AppointmentAdapter extends BaseAdapter
 {
     //fields
     private Activity myActivity;
-    private DatabaseHandler db;
+    private List<Appointment> db;
 
     // fields = DateTimeFormatter
     private DateTimeFormatter dtf_date;
     private DateTimeFormatter dtf_time;
 
     //constructor
-    public AppointmentAdapter(Activity myActivity, DatabaseHandler db)
+    public AppointmentAdapter(Activity myActivity, List<Appointment> db)
     {
         this.myActivity = myActivity;
         this.db = db;
@@ -37,17 +38,23 @@ public class AppointmentAdapter extends BaseAdapter
         dtf_time = DateTimeFormatter.ofPattern("HH:mm");
     }
 
+    // methods - setList()
+    public void setList(List<Appointment> appList)
+    {
+        db = appList;
+    }
+
     //methods from parent
     @Override
     public int getCount()
     {
-        return db.getAppointments().size();
+        return db.size();
     }
 
     @Override
     public Appointment getItem(int position)
     {
-        return db.getAppointments().get(position);
+        return db.get(position);
     }
 
     @Override

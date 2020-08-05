@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     private Button updateButton;
     private Button deleteButton;
     private ListView lv;
+    private Switch aSwitch;
 
     // fields - other
     private AppointmentAdapter appointmentAdapter;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         dbh.loadDb(sourceFile);
 
         // setup adapter
-        appointmentAdapter = new AppointmentAdapter(MainActivity.this, dbh);
+        appointmentAdapter = new AppointmentAdapter(MainActivity.this, dbh.getAppointments());
         lv.setAdapter(appointmentAdapter);
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         deleteButton.setOnClickListener(v -> onDeleteButtonClicked());
+        aSwitch.setOnCheckedChangeListener((bv, isChecked) -> onSwitchStateChangedChecked(isChecked));
     }
 
     @Override
@@ -216,13 +219,22 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(deleteIntent, requestCode);
     }
 
-//    public void onSwitchStateChangedChecked()
-//    {
-//        List<Appointment> activeAppointments = dbh.getAppointments()
-//                .stream()
-//                .filter(appointment -> appointment.getTime().isAfter(LocalDateTime.now()))
-//                .collect(Collectors.toList());
-//    }
+    public void onSwitchStateChangedChecked(boolean isChecked)
+    {
+        if (isChecked)
+        {
+            List<Appointment> activeAppointments = dbh.getAppointments()
+                    .stream()
+                    .filter(appointment -> appointment.getTime().isAfter(LocalDateTime.now()))
+                    .collect(Collectors.toList());
+            appointmentAdapter.setList(activeAppointments);
+        }
+        else
+        {
+            appointmentAdapter.setList(dbh.getAppointments());
+        }
+        appointmentAdapter.notifyDataSetChanged();
+    }
 
 
     // methods - other
@@ -233,6 +245,7 @@ public class MainActivity extends AppCompatActivity
         updateButton = findViewById(R.id.updateButton);
         deleteButton = findViewById(R.id.deleteButton);
         lv = findViewById(R.id.lv_appointments);
+        aSwitch = findViewById(R.id.switch_AM);
     }
 
 }
