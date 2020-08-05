@@ -109,52 +109,83 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == 1 && resultCode == RESULT_OK)
         {
             int id = data.getIntExtra("id", 0);
-            String name = data.getStringExtra("name");
-            String date = data.getStringExtra("date");
-            String time = data.getStringExtra("time");
-            String procedure = data.getStringExtra("procedure");
-            double price = data.getDoubleExtra("price", 0);
+            int index = Validation.getIndexFromID(dbh.getAppointments(), id);
 
-            LocalDate dateLd = LocalDate.parse(date);
-            LocalTime timeLt = LocalTime.parse(time);
-            LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
+            if(index == -1) {
+                String name = data.getStringExtra("name");
+                String date = data.getStringExtra("date");
+                String time = data.getStringExtra("time");
+                String procedure = data.getStringExtra("procedure");
+                double price = data.getDoubleExtra("price", 0);
 
-            Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
-            dbh.addRecord(appointment);
+                LocalDate dateLd = LocalDate.parse(date);
+                LocalTime timeLt = LocalTime.parse(time);
+                LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
 
-            // update ListView
-            appointmentAdapter.notifyDataSetChanged();
+                Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
+                dbh.addRecord(appointment);
 
-            // display a toast message
-            Toast.makeText(this, "Appointment added", Toast.LENGTH_SHORT).show();
+                // update ListView
+                appointmentAdapter.notifyDataSetChanged();
+
+                // display a toast message
+                Toast.makeText(this, "Appointment added", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "ID already in database", Toast.LENGTH_SHORT).show();
+            }
         }
         else if (requestCode == 2 && resultCode == RESULT_OK)
         {
+
             int id = data.getIntExtra("id", 0);
-            String name = data.getStringExtra("name");
-            String date = data.getStringExtra("date");
-            String time = data.getStringExtra("time");
-            String procedure = data.getStringExtra("procedure");
-            double price = data.getDoubleExtra("price", 0);
+            int index = Validation.getIndexFromID(dbh.getAppointments(), id);
 
-            LocalDate dateLd = LocalDate.parse(date);
-            LocalTime timeLt = LocalTime.parse(time);
-            LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
+            if(index != -1) {
 
-            Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
-            dbh.updateRecord(Validation.getIndexFromID(dbh.getAppointments(), id), appointment);
+                String name = data.getStringExtra("name");
+                String date = data.getStringExtra("date");
+                String time = data.getStringExtra("time");
+                String procedure = data.getStringExtra("procedure");
+                double price = data.getDoubleExtra("price", 0);
 
-            // update ListView
-            appointmentAdapter.notifyDataSetChanged();
+                LocalDate dateLd = LocalDate.parse(date);
+                LocalTime timeLt = LocalTime.parse(time);
+                LocalDateTime dateTime = LocalDateTime.of(dateLd, timeLt);
 
-            // display a toast message
-            Toast.makeText(this, "Appointment updated", Toast.LENGTH_SHORT).show();
+                Appointment appointment = new Appointment(id, name, dateTime, procedure, price);
+                dbh.updateRecord(Validation.getIndexFromID(dbh.getAppointments(), id), appointment);
+
+                // update ListView
+                appointmentAdapter.notifyDataSetChanged();
+
+                // display a toast message
+                Toast.makeText(this, "Appointment updated", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "Invalid ID", Toast.LENGTH_SHORT).show();
+            }
         }
-//        else
-//        {
-//            // display a toast message
-//            Toast.makeText(this, "No appointment updated", Toast.LENGTH_SHORT).show();
-//        }
+        else if(requestCode == 3 && resultCode == RESULT_OK)
+        {
+            int id = data.getIntExtra("id", 0);
+
+            int index = Validation.getIndexFromID(dbh.getAppointments(), id);
+
+            if(index != -1)
+            {
+                dbh.deleteRecord(index);
+                appointmentAdapter.notifyDataSetChanged();
+                Toast.makeText(this, "Appointment deleted", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(this, "Invalid ID", Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     // methods - handle button clicks
@@ -177,6 +208,13 @@ public class MainActivity extends AppCompatActivity
         Intent updateIntent = new Intent(MainActivity.this, UpdateActivity.class);
         int requestCode = 2;
         startActivityForResult(updateIntent, requestCode);
+    }
+
+    public void onDeleteButtonClicked()
+    {
+        Intent deleteIntent = new Intent(MainActivity.this, DeleteActivity.class);
+        int requestCode = 3;
+        startActivityForResult(deleteIntent, requestCode);
     }
 
     // methods - other
