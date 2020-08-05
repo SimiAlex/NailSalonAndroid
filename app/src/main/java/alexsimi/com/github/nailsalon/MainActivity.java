@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity
     private Button updateButton;
     private Button deleteButton;
     private ListView lv;
-    private Switch aSwitch;
 
     // fields - other
     private AppointmentAdapter appointmentAdapter;
@@ -93,7 +92,6 @@ public class MainActivity extends AppCompatActivity
         });
 
         deleteButton.setOnClickListener(v -> onDeleteButtonClicked());
-        aSwitch.setOnCheckedChangeListener((bv, isChecked) -> onSwitchStateChangedChecked(isChecked));
     }
 
     @Override
@@ -187,6 +185,7 @@ public class MainActivity extends AppCompatActivity
 
         // sort database after each operation
         Collections.sort(dbh.getAppointments(), (a1, a2)-> a1.getTime().compareTo(a2.getTime()));
+        Collections.reverse(dbh.getAppointments());
         appointmentAdapter.notifyDataSetChanged();
     }
 
@@ -219,24 +218,6 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(deleteIntent, requestCode);
     }
 
-    public void onSwitchStateChangedChecked(boolean isChecked)
-    {
-        if (isChecked)
-        {
-            List<Appointment> activeAppointments = dbh.getAppointments()
-                    .stream()
-                    .filter(appointment -> appointment.getTime().isAfter(LocalDateTime.now()))
-                    .collect(Collectors.toList());
-            appointmentAdapter.setList(activeAppointments);
-        }
-        else
-        {
-            appointmentAdapter.setList(dbh.getAppointments());
-        }
-        appointmentAdapter.notifyDataSetChanged();
-    }
-
-
     // methods - other
     public void initializeLayout()
     {
@@ -245,7 +226,6 @@ public class MainActivity extends AppCompatActivity
         updateButton = findViewById(R.id.updateButton);
         deleteButton = findViewById(R.id.deleteButton);
         lv = findViewById(R.id.lv_appointments);
-        aSwitch = findViewById(R.id.switch_AM);
     }
 
 }
