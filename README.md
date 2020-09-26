@@ -9,4 +9,4 @@ Simple Android app to help the salon staff manage client reservations.
 * ListView  
 * MVC  
 ### Screenshots
-
+![Main Page](MainPage.jpg) ![Add Page](AddPage.jpg)
