@@ -7,5 +7,6 @@ Simple Android app to help the salon staff manage client reservations.
 * singleton pattern  
 * CRUD  
 * ListView  
-* MVC
+* MVC  
+### Screenshots
 
