@@ -1,5 +1,5 @@
 ### Short description
-Simple android app to help the salon staff manage client reservations.   
+Simple Android app to help the salon staff manage client reservations.   
 ### Concepts used:  
 * Android  
 * Android UI  
